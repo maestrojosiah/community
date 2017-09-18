@@ -1,0 +1,10 @@
+{% if app.user %}
+<form class="" role="form" style="width:100%!important">
+  <div class="">
+      <textarea class="form-control" id="comment" placeholder="Your comment"></textarea>
+  </div>
+  <div class="">
+      <button type="button" id="addComment_{{ post.id }}" class="btn btn-default">Comment</a>
+  </div>
+</form>
+{% endif %}

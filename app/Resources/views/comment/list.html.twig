@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+{% block header %}
+<!-- Page Header -->
+<header class="masthead" style=" height:100px; background-image: url('{{ asset('img/home-bg.jpg') }}')">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+      </div>
+    </div>
+  </div>
+</header>
+{% endblock %}
+{% block content %}
+          <section id="commentHolder" class="col-lg-8 col-md-10 mx-auto">
+            <div class="titleBox">
+              <label>Comments for {{ post.user.firstName }}'s post - "{{ post.title }}"</label>
+                <button type="button" class="close" aria-hidden="true">&times;</button>
+            </div>
+            {% for comment in comments %}
+            {% if comment.replies is empty %}
+              {% set classText = "display:none;" %}
+              {% set direction = "down" %}
+            {% else %}
+              {% set classText = "" %}
+              {% set direction = "" %}
+            {% endif %}
+            <div class="commentBox">
+               <div class="panel panel-default">
+                  <div class="panel-heading">
+                      <strong>{{ comment.user.firstName }}</strong> <span class="text-muted">commented on {{ comment.created | date('F jS, Y') }}</span>
+                        {% if app.user and app.user.firstName == comment.user.firstName or app.user.firstName == comment.user.firstName %}
+                         | <a href="#" class="text-muted sm-text" data-toggle="modal" data-target="#deleteCommentModal{{ comment.id }}">
+                            Delete
+                          </a>
+                          | <span style="cursor: pointer;" class="text-muted sm-text" id="editComment_{{ comment.id }}">
+                            Edit
+                          </span>
+                        {% endif %}
+
+                  </div>
+                  <div class="panel-body">
+                      <p id="commentBody_{{comment.id}}">{{ comment.body }} </p>
+                  </div>
+                  <button type="button" style="display:none;" id="updateComment_{{comment.id}}" class="btn btn-default">Done</button>
+                  <div class="panel-footer">
+                      <span title="click here to reply to {{ comment.user.firstName }}" style="cursor: pointer;" class="sm-text" id="reply_{{ comment.id }}"><mark>Reply to {{ comment.user.firstName }}'s comment</mark><i class="fa fa-chevron-{{direction}}"></i></span>
+                  </div>                  
+              </div>
+            </div>
+            <div class="actionBox" id="commentReplyHolder_{{comment.id}}" style="{{ classText }}" >
+                <ul id="commentList_{{comment.id}}" class="commentList">
+                  {% for reply in comment.replies %}
+                    <li>
+                        <div class="commenterImage">
+                          <img src="http://placekitten.com/50/50" />
+                        </div>
+                        <div class="commentText">
+                            <p id="replyBody_{{reply.id}}" class="">{{ reply.body }}</p> 
+                            <button type="button" style="display:none;" id="updateReply_{{reply.id}}" class="btn btn-default">Done</button>
+                            <span class="date sub-text">
+                              {{ reply.user.firstName }} on {{ reply.created | date('F jS, Y') }}
+                                {% if app.user and app.user.firstName == post.user.firstName or app.user.firstName == reply.user.firstName %}
+                                | <a style="cursor: pointer;" class="text-muted" id="deleteReply_{{ reply.id }}">
+                                  Delete
+                                </a>
+                                | <a style="cursor: pointer;" class="text-muted" id="editReply_{{ reply.id }}">
+                                  Edit
+                                </a>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </li>
+                  {% endfor %}
+                </ul>
+               {{ include('templates/commentReply.html.twig') }}       
+            </div>
+
+      <!-- Delete comment Modal -->
+    <div class="modal fade" id="deleteCommentModal{{ comment.id }}" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Delete?</h4>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you want to delete "{{ comment.body|length > 20 ? comment.body|slice(0, 20) ~ '...' : comment.body  }}"?.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <a class="btn btn-danger" href="{{ path('delete_comment', {'id': comment.id } ) }}">Go ahead</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+          {% endfor %}
+          </section>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+{% block content %}
+{# {{ include('templates/nav.html.twig') }}			 
+ #}{% if error %}
+    <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+{% endif %}
+<div class="container">
+<div class="row">
+<div class="col-lg-8 col-md-10 mx-auto">
+<a href="#" class="btn btn-info" data-toggle="modal" data-target="#login-modal">Login</a>
+
+  <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+        <div class="loginmodal-container">
+          <h1>Login to Your Account</h1><br>
+
+            <form class="form-signin" action="{{ path('login') }}" method="post">
+
+            <h2 class="form-signin-heading">Please log in</h2>
+            <label for="username" class="sr-only">Email address</label>
+            <input type="email" id="username" name="_username" value="{{ last_username }}" class="form-control" placeholder="Email address" required autofocus>
+            <label for="password" class="sr-only">Password</label>
+            <input type="password" id="password" name="_password" class="form-control" placeholder="Password" required>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" name="_remember_me" value="remember-me" checked> Remember me
+              </label>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+            </form>
+          <div class="login-help">
+          <a href="{{path('user_registration')}}">Register</a> - <a href="#">Forgot Password</a> - <a href="#" class="pull-right" data-dismiss="modal">Cancel</a>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+  <script>
+      $(document).ready(function() {
+          $('#login-modal').modal('show');
+      });
+  </script>
+{% endblock %}

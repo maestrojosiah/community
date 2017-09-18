@@ -1,0 +1,10 @@
+{% if app.user %}
+<form class="form-inline" role="form" style="width:100%!important">
+  <div class="form-group">
+      <input class="form-control" id="commentReply_{{comment.id}}" type="text" placeholder="Your reply" />
+  </div>
+  <div class="form-group">
+      <button type="button" id="addCommentReply_{{comment.id}}" class="btn btn-default btn-xs">Reply</a>
+  </div>
+</form>
+{% endif %}

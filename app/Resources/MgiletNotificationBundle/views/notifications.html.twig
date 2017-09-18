@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+{% block header %}
+<!-- Page Header -->
+<header class="masthead" style=" height:100px; background-image: url('{{ asset('img/home-bg.jpg') }}')">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+      </div>
+    </div>
+  </div>
+</header>
+{% endblock %}
+{% block content %}
+<div class="row" style="padding:30px;">
+<h3>Notifications :</h3>
+<a id="notification-MarkAllAsSeen" href="{{ path('notification_mark_all_as_seen') }}" class="no-margin btn btn-xs pull-right">{{ 'mark all as seen'|trans({},'MgiletNotificationBundle') }}</a>
+</div>
+<div class="list-group infinite-container">
+	{% for notification in notifications %}
+		{% if notification.seen %}
+			{% set class = "text-black" %}
+		{% else %}
+			{% set class = "text-white bg-info" %}
+		{% endif %}
+	  	<a href="#" id="followNotif_{{notification.id}}" class="{{ class }} list-group-item infinite-item">{{ notification }}</a>
+	{% endfor %}
+  {% if data.nextPage is defined and data.nextPage != "blank" %}       
+    <a class="infinite-more-link" href="{{ path('notifications_list', {'page':data.nextPage} ) }}" style="visibility: hidden;"></a>
+  {% endif %}
+</div> 
+{% endblock %}

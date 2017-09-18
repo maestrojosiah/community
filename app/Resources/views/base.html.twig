@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{% block title %}HHES Blog{% endblock %}</title>
+    {% block stylesheets %}{% endblock %}
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- notiny CSS -->
+    <link href="{{ asset('notiny/notiny.min.css') }}" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="{{ asset('vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- Custom styles for this template -->
+    <link href="{{ asset('css/clean-blog.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/thenewwalk.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('bundles/mgiletnotification/css/mgilet_notification.css') }}">
+
+    <!-- styles for cropper -->    
+    <link  href="{{ asset('cropper/dist/cropper.css') }}" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    {% if app.user %}
+        {% set link = "homepage" %}
+        {% set loggedIn = true %}
+    {% else %}
+        {% set link = 'login' %}
+        {% set loggedIn = false %}
+    {% endif %}
+    {% if user is not defined %}
+      {% set user = data.user %}
+    {% endif %}
+
+    {% if app.user %}
+      {% if profile_pic is defined and profile_pic == false %}
+        {% set myProfPicLink = "photos/default_" ~ user.gender ~ ".png" %}
+      {% elseif profile_pic is defined and profile_pic == true %}
+        {% set myProfPicLink = "photos/profile/" ~ profPic %}
+      {% else %}
+        {% set myProfPicLink = "" %}
+      {% endif %}
+    {% endif %}
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+      <div class="container" style="position: relative;">
+        <a class="navbar-brand" href="{{ path('homepage') }}">HHES Blog</a>
+        <form class="navbar-form" role="search">
+        <div class="input-group">
+            <input type="text" id="searchItem" class="form-input form-control" placeholder="Search" name="q">
+            <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+        </div>
+        </form>
+        <div class="panel panel-default" id="searchResults" style="position: absolute; left: 20px; top: 70px;">
+            <span id='close' style="display:none; cursor: pointer;"><i class="fa fa-times"></i></span>
+              <div id="listGroup" class="list-group">
+              </div>
+        </div>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          Menu
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto navbar-top-links">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ path('homepage') }}">Blog</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="about.html">Public Website</a>
+            </li>
+{#             <li class="nav-item">
+              <a class="nav-link" href="post.html">Discussions</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="contact.html">Lesson</a>
+            </li>
+ #}            {{ mgilet_notification_render({ 'display': 'dropdown', 'seen': false}) }}            <li class="nav-item dropdown show">
+                 <a class="dropdown-toggle nav-link" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="{{ path(link) }}">{{ user.firstName }}</a>
+                {% if app.user %}
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item" href="{{ path('user_profile', {'slug': app.user.randomAuth } ) }}">My account</a>
+                    <a class="dropdown-item" href="#">My articles</a>
+                    <a class="dropdown-item" href="{{ path('logout') }}">Logout</a>
+                  </div>
+                {% else %}
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item" href="{{ path('login') }}">Login</a>
+                    <a class="dropdown-item" href="{{ path('user_registration') }}">Register</a>
+                  </div>
+                {% endif %}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    {% block header %}
+    <!-- Page Header -->
+    <header class="masthead" style="background-image: url('{{ asset('img/home-bg.jpg') }}')">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="site-heading">
+              <h1>Daily Inspiration</h1>
+              <span class="subheading">Do you have a minute? God has a minute for you. Get inspired!</span>
+              <br /><br />
+              {% if app.user and form is defined and form is not empty %}
+                <button type="button" class="btn btn-outline btn-primary btn-lg" data-toggle="modal" data-target="#createModal">Create Post</button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    {% endblock %}
+    {% block content %}{% endblock %}
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <ul class="list-inline text-center">
+              <li class="list-inline-item">
+                <a href="#">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+            </ul>
+            <p class="copyright text-muted">Copyright &copy; Your Website 2017</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    {% block includeCreate %}
+    {% if app.user and form is defined and form is not empty %}
+    <!-- Modal -->
+    {{ include('templates/createModal.html.twig') }}       
+    {% endif %}
+    {% endblock %}
+
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('vendor/popper/popper.min.js') }}"></script>
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+
+    <!-- Notification javascript - notiny -->
+    <script src="{{ asset('notiny/notiny.min.js') }}"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="{{ asset('js/clean-blog.min.js') }}"></script>
+
+    <!-- scripts for cropper -->
+    <script src="{{ asset('cropper/dist/cropper.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('bundles/mgiletnotification/js/ajax-notification.js') }}"></script>
+
+    <!-- Waypoint scroll plugin -->
+    <script src="{{ asset('waypoints/lib/jquery.waypoints.min.js') }}"></script>
+    <script src="{{ asset('waypoints/lib/shortcuts/infinite.min.js') }}"></script>
+    <script src="{{ asset('jquery.ns-autogrow/dist/jquery.ns-autogrow.min.js') }}"></script>
+    <script type="text/javascript">
+      // $('#image').cropper({
+      //   aspectRatio: 9 / 9,
+      //   crop: function(e) {
+      //     // Output the result data for cropping image.
+      //     console.log(e.x);
+      //     console.log(e.y);
+      //     console.log(e.width);
+      //     console.log(e.height);
+      //     console.log(e.rotate);
+      //     console.log(e.scaleX);
+      //     console.log(e.scaleY);
+      //   }
+      // });
+    </script>
+
+    <script type="text/javascript">
+      $(document).on('click', '[id^="followNotif_"]', function(){ 
+        //when you click on "comment" button to repond to a post
+        var nameId = jQuery(this).attr("id");
+        var arrStr = nameId.split("_");
+        var id = arrStr[1];
+        $.ajax({
+            url:"{{ (path('notification_mark_as_seen_ajax')) }}",
+            type: "POST",
+            dataType: "json",
+            data: {
+                "id": id,
+            },
+            async: true,
+            success: function (data)
+            {
+              console.log(data.link);
+              location.href = data.link;              
+            }
+        });
+      });
+    </script>    
+    <script>
+      $( "#searchItem" ).keyup(function( event ) {
+        var value = $(this).val();
+        if($("#searchItem").val().length >= 3) {
+          $.ajax({
+              url:'{{ (path('get_matches')) }}',
+              type: "POST",
+              dataType: "json",
+              data: {
+                  "thisValue": value,
+              },
+              async: true,
+              success: function (data)
+              {
+                 console.log(data);
+                 $( "#listGroup" ).empty();
+                $.each(data.combined, function( key, value ) {
+                  
+                    $("#listGroup").append('<a href="'+key+'" class="list-group-item list-group-item-action">...'+value+'...</a>');
+                  
+                });
+                
+              }
+          });
+        }
+
+      });
+    </script>
+
+    <script>
+    $(document).on('click', '[id^="addComment_"]', function(){ 
+      //when you click on "comment" button to repond to a post
+      var nameId = jQuery(this).attr("id");
+      var arrStr = nameId.split("_");
+      var id = arrStr[1];
+  
+      var comment = $("#comment").val();
+
+      $.ajax({
+            url:'{{ (path('create_comment')) }}',
+            type: "POST",
+            dataType: "json",
+            data: {
+                "comment": comment,
+                "id": id,
+            },
+            async: true,
+            success: function (data)
+            {
+              console.log(data.comment);
+              $("#commentHolder").append(data.comment);
+              $("#comment").val("");
+            }
+        });
+
+      });
+    </script>
+{% if app.user %}
+    <script>
+    $(document).on('click', '[id^="makeProfile_"]', function(){ 
+      //when you click on "make profile" button to change profile picture
+      var nameId = jQuery(this).attr("id");
+      var arrStr = nameId.split("_");
+      var id = arrStr[1];
+  
+      $.ajax({
+            url:'{{ (path('make_profile_picture')) }}',
+            type: "POST",
+            dataType: "json",
+            data: {
+                "id": id,
+            },
+            async: true,
+            success: function (data)
+            {
+                location.href = "{{ path('user_profile', {'slug': user.randomAuth}) }}";
+            }
+        });
+
+      });
+    </script>
+{% endif %}
+    <script>
+    $(document).on('click', '[id^="updateComment_"]', function(){ 
+      //when you click on "commentEdit" button to edit a comment
+      var nameId = jQuery(this).attr("id");
+      var arrStr = nameId.split("_");
+      var id = arrStr[1];
+  
+      var comment = $("#commentBody_"+id).text();
+
+      $.ajax({
+            url:'{{ (path('edit_comment')) }}',
+            type: "POST",
+            dataType: "json",
+            data: {
+                "comment": comment,
+                "id": id,
+            },
+            async: true,
+            success: function (data)
+            {
+              console.log(data.comment);
+              $("#commentBody_"+id).val(data.comment);
+              $("#commentBody_"+id).attr('contenteditable', 'false');        
+              $("#commentBody_"+id).css("background-color", "white"); 
+              $("#updateComment_"+id).hide();     
+
+            }
+        });
+
+      });
+    </script>
+
+    <script>
+    $(document).on('click', '[id^="updateReply_"]', function(){ 
+      //when you click on "updateReply_" button to edit a reply
+      var nameId = jQuery(this).attr("id");
+      var arrStr = nameId.split("_");
+      var id = arrStr[1];
+  
+      var reply = $("#replyBody_"+id).text();
+
+      $.ajax({
+            url:'{{ (path('edit_reply')) }}',
+            type: "POST",
+            dataType: "json",
+            data: {
+                "reply": reply,
+                "id": id,
+            },
+            async: true,
+            success: function (data)
+            {
+              console.log(data.reply);
+              $("#replyBody_"+id).val(data.reply);
+              $("#replyBody_"+id).attr('contenteditable', 'false');        
+              $("#replyBody_"+id).css("background-color", "white"); 
+              $("#updateReply_"+id).hide();     
+
+            }
+        });
+
+      });
+    </script>
+
+    <script>
+    $(document).on('click', '[id^="deleteReply_"]', function(){ 
+      //when you click on "deleteReply" button to delete a reply
+      var result = confirm("Are you sure you want to delete?");
+      if (result) {
+        
+        var nameId = jQuery(this).attr("id");
+        var arrStr = nameId.split("_");
+        var id = arrStr[1];
+
+        $.ajax({
+              url:'{{ (path('delete_reply')) }}',
+              type: "POST",
+              dataType: "json",
+              data: {
+                  "id": id,
+              },
+              async: true,
+              success: function (data)
+              {
+                console.log(data.reply);
+                $("#replyBody_"+id).parent().parent().hide();
+              }
+          });
+      }
+
+      });
+    </script>
+
+    <script>
+    // make comment paragraph editable
+    $(document).on('click', '[id^="editComment_"]', function(){ 
+        var nameId = jQuery(this).attr("id");
+        var arrStr = nameId.split("_");
+        var id = arrStr[1]; 
+        console.log(id);
+        $("#commentBody_"+id).attr('contenteditable', 'true');        
+        $("#commentBody_"+id).css("background-color", "#F4F9B4"); 
+        $("#commentBody_"+id).focus(); 
+        $("#updateComment_"+id).show();     
+      });
+    </script>
+
+    <script>
+    // make reply paragraph editable
+    $(document).on('click', '[id^="editReply_"]', function(){ 
+        var nameId = jQuery(this).attr("id");
+        var arrStr = nameId.split("_");
+        var id = arrStr[1]; 
+        console.log(id);
+        $("#replyBody_"+id).attr('contenteditable', 'true');        
+        $("#replyBody_"+id).css("background-color", "#F4F9B4"); 
+        $("#replyBody_"+id).focus(); 
+        $("#updateReply_"+id).show();     
+      });
+    </script>
+{% if app.user %}
+    <script>
+    // click on reply button to respond to a comment
+    $(document).on('click', '[id^="addCommentReply_"]', function(){ 
+        var nameId = jQuery(this).attr("id");
+        var arrStr = nameId.split("_");
+        var id = arrStr[1];
+    
+        var commentReply = $("#commentReply_"+id).val();
+
+        $.ajax({
+              url:'{{ (path('create_comment_reply')) }}',
+              type: "POST",
+              dataType: "json",
+              data: {
+                  "commentReply": commentReply,
+                  "id": id,
+              },
+              async: true,
+              success: function (data)
+              {
+                console.log(data.commentReply);
+                var replyBeginning = '<li><div class="commenterImage"><img src=\'{{ asset(myProfPicLink) }}\'style="width:30px; height:30px;" /></div>';
+                $("#commentList_"+id).append(replyBeginning + data.commentReply);
+                $("#commentReply_"+id).val("");
+              }
+          });
+
+        });
+    </script>
+{% endif %}
+    <script>
+    // when clicking on enter in the reply to comment input
+        $(document).on('keypress', '[id^="commentReply_"]', function(e){
+           var key = e.which;
+           if(key == 13){ 
+            var nameId = jQuery(this).attr("id");
+            var arrStr = nameId.split("_");
+            var id = arrStr[1];
+
+            $("#addCommentReply_"+id).click();
+            return false;
+          }
+        });
+
+    </script>
+    <script>
+    //toggle opening and closing the replies section of a comment
+    $(document).on('click', '[id^="reply_"]', function(){ 
+        var nameId = jQuery(this).attr("id");
+        var arrStr = nameId.split("_");
+        var id = arrStr[1];
+        console.log(id); 
+        $("#commentReplyHolder_"+id).toggle();
+      });
+    </script>
+
+    <script type="text/javascript">
+    //infinite scrolling
+        var infinite = new Waypoint.Infinite({
+          element: $('.infinite-container')[0]
+        })
+    </script>
+    {% for message in app.flashes('success') %}
+        <script type="text/javascript">
+            $.notiny({ text: '{{ message }}' });
+        </script>
+    {% endfor %}
+
+    <script type="text/javascript">
+      $(document).on('click', '[id^="likeArticle_"]', function(){ 
+        var nameId = jQuery(this).attr("id");
+        var arrStr = nameId.split("_");
+        var id = arrStr[1];
+        $.ajax({
+            url:'{{ (path('add_like')) }}',
+            type: "POST",
+            dataType: "json",
+            data: {
+                "id": id,
+            },
+            async: true,
+            success: function (data)
+            {
+                $("#likeArticle_"+id).removeClass("btn-"+data.prevClass);
+                $("#likeArticle_"+id).addClass("btn-"+data.class);
+                $("#countLikes").text(" "+data.likes+" ");
+            }
+        });
+
+      });
+    </script>
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+          $(".sfirePost").click(function(event) {
+              var id = event.target.id;
+              $.ajax({
+                  url:'{{ (path('get_post_for_edit')) }}',
+                  type: "POST",
+                  dataType: "json",
+                  data: {
+                      "id": id,
+                  },
+                  async: true,
+                  success: function (data)
+                  {
+                      console.log("results:"+ data.title);
+                      $("#post_title").val(data.title);
+                      CKEDITOR.instances['post_body'].setData(data.body);
+                  }
+              });
+
+          });
+
+          $('textarea').autogrow({vertical: true, horizontal: false, flickering: false});
+
+          // (function(w, $) {
+
+          //     'use strict';
+
+          //     $(function() {
+          //         $('.cropper').each(function() {
+          //             new Cropper($(this));
+          //         });
+          //     });
+
+          // })(window, jQuery);      
+          //new Crop($('#crop'), 16/9);
+      });
+    </script>
+    {% block javascripts %}{% endblock %}
+    
+  </body>
+
+</html>

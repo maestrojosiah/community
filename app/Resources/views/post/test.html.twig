@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+{% block header %}
+<!-- Page Header -->
+<header class="masthead" style=" height:100px; background-image: url('{{ asset('img/home-bg.jpg') }}')">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+      </div>
+    </div>
+  </div>
+</header>
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+{% block includeCreate %}
+{# {% if data.photo is defined %}
+{{ dump(data.photo) }}
+{% endif %} #}
+{% endblock %}
+
+{% block javascripts %}
+	<script type="text/javascript">
+	    $(window).on('load',function(){
+	        $('#uploadPhotoModal').modal('show');
+	    });
+	</script>
+{% endblock %}

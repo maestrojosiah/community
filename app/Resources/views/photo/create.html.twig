@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+{% block header %}
+<!-- Page Header -->
+<header class="masthead" style=" height:100px; background-image: url('{{ asset('img/home-bg.jpg') }}')">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+      </div>
+    </div>
+  </div>
+</header>
+{% endblock %}
+
+{% block content %}
+<!-- Modal -->
+<div class="modal fade" id="uploadPhotoModal" tabindex="-1" role="dialog" aria-labelledby="uploadPhotoModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="uploadPhotoModalLabel">Modal title</h5>
+        <a href="{{ path('user_profile', {'slug': user.randomAuth }) }}" class="close" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </a>
+      </div>
+      <div class="modal-body">
+      <div>
+        {% if data.photo is defined %}
+          <img id="image" src="{{ asset('photos/profile/' ~ data.photo.filename) }}" />
+        {% endif %}
+      </div>
+		 {{ form_start(form) }}
+		 {{ form_errors(form) }}
+		  <div class="form-group">
+		    <label for="email">Please select a photo</label>
+		    {{ form_row(form.filename, {'attr': {'class': 'form-control'}}) }}
+		  </div>
+		  <div class="form-group">
+		    <label for="pwd">Something about the photo:</label>
+		    {{ form_row(form.caption, {'attr': {'class': 'form-control'}}) }}
+		  </div>
+      </div>
+      <div class="modal-footer">
+        <a href="{{ path('user_profile', {'slug': user.randomAuth }) }}" class="btn btn-secondary">Close</a>
+		    {{ form_row(form.save, {'attr': {'class': 'btn btn-primary'}}) }}
+		{{ form_end(form) }}       
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block includeCreate %}
+{# {% if data.photo is defined %}
+{{ dump(data.photo) }}
+{% endif %} #}
+{% endblock %}
+
+{% block javascripts %}
+	<script type="text/javascript">
+	    $(window).on('load',function(){
+	        $('#uploadPhotoModal').modal('show');
+	    });
+	</script>
+{% endblock %}

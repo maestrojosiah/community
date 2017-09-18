@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+{% block content %}
+    {{ include('templates/comment.html.twig') }}       
+{% endblock %}
+{% block javascripts %}
+  <script>
+      $(document).ready(function() {
+          $('#createModal').modal('show');
+      });
+  </script>
+{% endblock %}

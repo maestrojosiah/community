@@ -1,0 +1,51 @@
+{% if app.user %}
+<li class="dropdown nav-item">
+    <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#">
+        <i class="fa fa-bell fa-fw"></i>{% if mgilet_unseen_notification_count() > 0 %}<span id="notifNumber" class="badge badge-notify">{{ mgilet_unseen_notification_count() }}</span>{% endif %}
+    </a>
+  
+    <ul class="dropdown-menu dropdown-messages">
+    <li style="padding: 10px;"><b class="text-muted">{{ 'notifications'|trans({},'MgiletNotificationBundle') }}</b>
+        <a id="notification-MarkAllAsSeen" href="{{ path('notification_mark_all_as_seen') }}" class="no-margin btn btn-xs pull-right">{{ 'mark all as seen'|trans({},'MgiletNotificationBundle') }}</a>
+    </li>
+    <hr class="no-margin">
+    <div class="scrollable-menu">
+    {% for notification in notifications %} 
+      <div class="list-group no-margin">
+        <li>
+          {% if notification.seen %}
+            <div id="sib" class="text-black">
+                <strong>{{ notification.subject }}</strong>
+                <span class="pull-right text-muted">
+                    <em><small class="list-group-item-text">{{ notification.date|date('M jS, h.i a') }}</small></em><a class="ajax-notification text-muted">...</a>
+                </span>
+            </div>
+            <div><a style="cursor:pointer" href="{{ notification.link }}">{{ notification.message }}</a></div>
+          {% else %}
+            <div id="sib" class="text-primary">
+                <strong>{{ notification.subject }}</strong>
+                <span class="pull-right text-muted">
+                    <em><small class="list-group-item-text">{{ notification.date|date('M jS, h.i a') }}</small></em><a href="{{ path('notification_mark_as_seen', {'notification': notification.id}) }}" class="ajax-notification text-muted">x</a>
+                </span>
+            </div>
+            <div class="text-primary" style="cursor:pointer" ><a id="followNotif_{{notification.id}}" >{{ notification.message }}</a></div>
+          {% endif %}
+        </li>
+      </div>
+        {% endfor %}
+    </div>
+    {% if notifications|length < 1 %}
+        <div class="well-lg text-muted text-center">
+            <b>{{ 'no new notification'|trans({},'MgiletNotificationBundle') }}</b>
+        </div>
+    {% endif %}
+    <li>
+        <a class="text-center" href="{{ path('notifications_list') }}">
+            <strong>{{ 'All notifications'|trans({},'MgiletNotificationBundle') }}</strong>
+            <i class="fa fa-angle-right"></i>
+        </a>
+    </li>
+</ul>
+        <!-- /.dropdown-messages -->
+</li>
+{% endif %}

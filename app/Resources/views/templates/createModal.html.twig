@@ -1,0 +1,35 @@
+    <!-- Post Content -->
+    <article>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+		    <!-- Modal -->
+		    <div class="modal fade" id="createModal" role="dialog" aria-labelledby="createModal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+		        <div class="modal-dialog">
+		            <div class="modal-content">
+		                <div class="modal-header">
+		                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		                    <h4 class="modal-title" id="createModalLabel">Share with us</h4>
+		                </div>
+		                <div class="modal-body">
+		                    {{ form_start(form, {'method': 'post'} ) }}
+		                    {{ form_errors(form) }}
+		                    {{ form_row(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Post Title' }} ) }}
+		                    {{ form_row(form.body, {'attr': {'class': 'form-control' }} ) }}
+		                </div>
+		                <div class="modal-footer">
+		                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		                    {{ form_row(form.save, {'attr': {'class': 'btn btn-primary' }} ) }}
+		                    {{ form_end(form) }}
+		                </div>
+		            </div>
+		            <!-- /.modal-content -->
+		        </div>
+		        <!-- /.modal-dialog -->
+		    </div>
+		    <!-- /.modal -->
+		    <!-- /.modal -->
+          </div>
+        </div>
+      </div>
+    </article>

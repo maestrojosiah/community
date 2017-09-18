@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+{% block content %}
+{# {{ include('templates/nav.html.twig') }}			 
+ #}
+<div class="container">
+<div class="row">
+<div class="col-lg-8 col-md-10 mx-auto">
+    <a href="#" class="btn btn-info" data-toggle="modal" data-target="#login-modal">Create Account</a>
+
+        <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+        <div class="loginmodal-container">
+
+	{{ form_start(form, {'method': 'post', 'action': path('user_registration'), 'attr': {'class': 'form-signin' }} ) }}
+        <h2 class="form-signin-heading">Please Sign Up</h2>
+        <label for="first_name" class="sr-only">First Name</label>
+        {{ form_errors(form.first_name) }}
+        {{ form_widget(form.first_name, {'attr': {'class': 'form-control', 'placeholder': 'First Name', 'id': 'first_name' }} ) }}
+        <label for="last_name" class="sr-only">Last Name</label>
+        {{ form_errors(form.last_name) }}
+        {{ form_widget(form.last_name, {'attr': {'class': 'form-control', 'placeholder': 'Last Name', 'id': 'last_name' }} ) }}
+        <label for="gender" class="sr-only">Gender</label>
+        {{ form_errors(form.gender) }}
+        {{ form_widget(form.gender, {'attr': {'class': 'form-control', 'id': 'gender' }} ) }}
+        <label for="email" class="sr-only">Email Address</label>
+        {{ form_errors(form.email) }}
+        {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Email', 'id': 'email' }} ) }}
+        <label for="password" class="sr-only">Password</label>
+		{{ form_errors(form.plainPassword.first) }}
+        {{ form_widget(form.plainPassword.first, {'attr': {'class': 'form-control', 'placeholder': 'Password', 'id': 'password' }} ) }}
+        <label for="password_repeat" class="sr-only">Repeat Password</label>
+		{{ form_errors(form.plainPassword.second) }}
+        {{ form_widget(form.plainPassword.second, {'attr': {'class': 'form-control', 'placeholder': 'Repeat Password', 'id': 'password_repeat' }} ) }}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+	{{ form_end(form) }}
+
+          <div class="login-help">
+          <a href="{{path('login')}}">Login</a> - <a href="#">Forgot Password</a> - <a href="#" class="pull-right" data-dismiss="modal">Cancel</a>
+          </div>
+        </div>
+      </div>
+      </div>
+</div>
+</div>
+</div>
+{% endblock %}
+    {% block javascripts %}
+      <script>
+          $(document).ready(function() {
+              $('#login-modal').modal('show');
+          });
+      </script>
+    {% endblock %}

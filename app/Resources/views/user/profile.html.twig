@@ -1,0 +1,170 @@
+{% extends 'base.html.twig' %}
+{% block header %}
+<!-- Page Header -->
+<header class="masthead" style=" height:100px; background-image: url('{{ asset('img/home-bg.jpg') }}')">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+      </div>
+    </div>
+  </div>
+</header>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row clearfix well">
+		<div class="col-md-2 column">
+
+	        {% if profilePhoto is defined %}
+	          <img class="img-thumbnail" alt="140x140" id="profPic" src="{{ asset('photos/profile/' ~ profilePhoto.filename) }}" />
+	        {% else %}
+	          <img class="img-thumbnail" alt="140x140" id="profPic" src="{{ asset('photos/default_' ~ user.gender ~ '.png') }}" />
+	        {% endif %}
+			<a href="{{ path('upload_photo') }}">
+				Upload Photo
+			</a>
+		</div>
+		<div class="col-md-8 column">
+			<blockquote>
+				<p>
+					Potter Guy
+				</p> <small>21 / M / Single / Straight <cite>London England</cite></small>
+			</blockquote>
+		</div>
+		<div class="col-md-2 column">
+		 
+			 <button class="btn btn-default btn-block" type="button">
+                Poke
+             </button>
+             <button class="btn btn-default btn-block" type="button">
+                Message
+             </button>
+             <button class="btn btn-default btn-block" type="button">
+                Save
+             </button>
+                 		 
+		</div>
+	</div>
+	<div class="row clearfix">
+		<div class="col-md-8 column">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Basic Tabs
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+					<!-- Nav tabs -->
+					<ul class="nav nav-tabs" role="tablist">
+					  <li class="nav-item">
+					    <a class="nav-link active" data-toggle="tab" href="#home" role="tab">Posts</a>
+					  </li>
+					  <li class="nav-item">
+					    <a class="nav-link" data-toggle="tab" href="#profile" role="tab">Photos</a>
+					  </li>
+					  <li class="nav-item">
+					    <a class="nav-link" data-toggle="tab" href="#messages" role="tab">Messages</a>
+					  </li>
+					  <li class="nav-item">
+					    <a class="nav-link" data-toggle="tab" href="#settings" role="tab">Settings</a>
+					  </li>
+					</ul>
+					<!-- Tab panes -->
+					<div class="tab-content">
+					  <div class="tab-pane active" id="home" role="tabpanel">
+					  {% if user.posts %}
+					  	<ul>
+					  	{% for post in user.posts %}
+					  		<li><a href="{{ path('show_post', {'id': post.id, 'title': post.title}) }}">{{post.title}}</a></li>
+					  	{% endfor %}
+					  	</ul>
+					  {% endif %}
+					  </div>
+					  <div class="tab-pane" id="profile" role="tabpanel">
+					  	{% if photos is defined %}
+						<div class="col-lg-12">		
+		                    <div class="panel panel-default">
+		                        <div class="panel-heading">
+		                            Basic Table
+		                        </div>
+		                        <!-- /.panel-heading -->
+		                        <div class="panel-body">
+		                            <div class="table-responsive">
+		                                <table class="table">
+		                                    <thead>
+		                                        <tr>
+		                                            <th>Photo</th>
+		                                            <th>Description</th>
+		                                            <th>Manage</th>
+		                                        </tr>
+		                                    </thead>
+		                                    <tbody>
+		                                    	{% for photo in photos %}
+		                                    		{% if photo.profile == true %}
+	         	 										{% set profClass = "text-success" %}
+	         	 									{% else %}	
+	         	 										{% set profClass = "text-black" %}
+	         	 									{% endif %}	
+			                                        <tr>
+			                                            <td><img src="{{ asset('photos/profile/' ~ photo.filename ) }}" style="width:50px; height:50px;" /></td>
+			                                            <td>{{ photo.caption }}</td>
+			                                            <td><span style="cursor:pointer" class={{profClass}} id="makeProfile_{{photo.id}}">Profile</span> | <a href="{{ path('edit_photo', {'id': photo.id}) }}">Edit</a> | <a href="{{ path('delete_photo', {'id': photo.id}) }}">Delete</a></td>
+			                                        </tr>
+		                                    	{% endfor %}
+		                                    </tbody>
+		                                </table>
+		                            </div>
+		                            <!-- /.table-responsive -->
+		                        </div>
+		                        <!-- /.panel-body -->
+		                    </div>
+		                    <!-- /.panel -->
+		                </div>
+		            	{% endif %}
+					  </div>
+					  <div class="tab-pane" id="messages" role="tabpanel">.asg</div>
+					  <div class="tab-pane" id="settings" role="tabpanel">gaa.</div>
+					</div>	
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+		</div>	
+		<div class="col-md-4 column">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>
+							Details
+						</th>
+						<th>
+							His/ Her
+						</th> 
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							Last Online
+						</td>
+						<td>
+							1 hour ago
+						</td>
+					</tr>
+                    <tr>
+						<td>
+							Ethinicity
+						</td>
+						<td>
+							White
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>					
+	</div>
+</div>
+{# <div>
+  <img id="image" src="{{ asset('photos/default_boy.png') }}">
+</div>
+ #}
+{% endblock %}

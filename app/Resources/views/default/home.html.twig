@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+  {% if app.request.query.get("page") is defined and app.request.query.get("page") is not empty %}
+    {% set nextPagez = app.request.query.get("page") + 1 %}
+  {% else %}
+    {% set nextPagez = 2 %}
+  {% endif %}
+    <!-- Main Content -->
+    <div class="container">
+      <div class="row infinite-container">
+        <div class="col-lg-8 col-md-10 mx-auto infinite-item">
+          {% if posts is not empty %}
+          {% for post in posts %}
+            {% set postTitle = post.title|replace({" ": "-", "’": "", "'": ""}) %}
+            <div class="post-preview">
+              <a href="{{ path('show_post', {'id':post.id, 'title':postTitle } ) }}">
+                <h2 class="post-title">
+                  {{ post.title }}
+                </h2>
+                <h3 class="post-subtitle">
+                  _______________________________
+                </h3>
+              </a>
+              <p class="post-meta">Posted by
+                <a href="#"> {{ post.user.FirstName|capitalize }}</a>
+                on {{ post.created|date('F j o') }}
+                {% if app.user and app.user.firstName == post.user.firstName %} | <a href="#" data-toggle="modal" data-target="#deleteModal{{ post.id }}">Delete</a> | <a href="{{ path('edit_post', {'id': post.id } ) }}" id="{{ post.id }}">Edit</a></p>{% endif %}
+            </div>
+            <hr>
+
+            <!-- deleteModal -->
+            <div class="modal fade" id="deleteModal{{ post.id }}" role="dialog">
+              <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Delete?</h4>
+                  </div>
+                  <div class="modal-body">
+                    <p>Are you sure you want to delete "{{ post.title }}"?.</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <a class="btn btn-danger" href="{{ path('delete_post', {'id': post.id } ) }}">Go ahead</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          {% endfor %}
+          {% endif %}
+          {% if nextPage is defined and nextPage != "blank" %}       
+            <a class="infinite-more-link" href="{{ path('homepage', {'page':nextPage} ) }}" style="visibility: hidden;"></a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+{% endblock %}
